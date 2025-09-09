@@ -123,8 +123,30 @@ class OrderBook {
 };
 ```
 
-##### OrderBookManager
+##### OrderBookManager Class
+
+The order book manager is the service that manages all order books for individual securities. The server accepts order requests from agents and routes them to the correct order book. The order response is sent back to the agent. This is a multi-threaded server application to handle many connections and order requests/responses. The interactions with the order book manager come from the `OrderRequest` and `OrderResponse` messages (see message structure section for detailed message information).
+
+Based on the order request, the order book manager uses the symbol to call the correct order book's create order, modify order, or cancel order function.
+
+```cpp
+class OrderBookManager {
+	std::map<string, OrderBook> orderBookMap; // Maps the security symbol to the corresponding order book
+};
+```
 
 ##### Agent Class
 
+The agent (also known as a trader) can send `OrderRequest` messages to the order book manager. Once the order request is made, a `OrderResponse` will be sent by the server to indicate the order status.
+
+***NOTE*:** In future versions, the agent will be simulated using a trader model, and can specify N number of agents to simulate. This will require an `AgentManager` class.
+
+```cpp
+class Agent {
+	int traderId; // Agent identifier
+};
+```
+
 ### Order Matching Mechanics
+
+### Order Request/Response Message Structure
