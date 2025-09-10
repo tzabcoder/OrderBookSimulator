@@ -24,6 +24,8 @@ The simulator accepts various types of **buy** and **sell** orders:
 5. *Immediate-Or-Cancel* - order to fill as much as possible immediately, remainder is canceled
 6. *Iceberg* - large order revealed in smaller chunks
 
+Limit, stop, and iceberg orders require a price to be specified. If a price is specified for the other order types, it will be ignored.
+
 ```cpp
 enum class OrderSide {
 	BUY,
@@ -70,17 +72,23 @@ The order class is the structure for *created* orders in the system. It contains
 
 The remaining fields are populated and maintained by the order book.
 
+The order ID is a unique identifier for a particular order in an order book. It consists of a timestamp and a random component. The timestamp is derived from the timestamp, which is in milliseconds. The random component ensures that orders submitted at the same time from various agents has a low probability of collision. The random component is a 6-digit integer.
+
+Order ID: {timestamp}_{random component}
+
+Example Order ID: 1757529878230_538411
+
 ```cpp
 class Order {
-	int orderId;         // Order identifier
+	string orderId;      // Order identifier
 	int qty;             // Quantity of the security to trade
 	int remainingQty;    // Remaining quantity for partial fills
-	long timestamp;      // Time order was created
+	long long timestamp; // Time order was created
 	double price;        // Specified price to trade; relevant for certian order types
 	string symbol;       // Symbol of the instrument traded
 	bool filled;         // True if FULLY filled, false otherwise
 	OrderSide orderSide; // Buy or Sell
-	OrderKind orderType; // Kind of order sent
+	OrderType orderType; // Type of order sent
 };
 ```
 
