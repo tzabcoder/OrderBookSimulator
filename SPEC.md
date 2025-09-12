@@ -125,6 +125,8 @@ The following interactions would change the order book:
 * Cancel order - cancel an order in the order book
 * Match orders - execute a trade (matching orders in the order book)
 
+The match orders function is event driven. See the Order matching mechanics section for more information.
+
 ```cpp
 class OrderBook {
 	string instrumentSymbol;         // Symbol for the order book's security
@@ -160,5 +162,28 @@ class Agent {
 ```
 
 ### Order Matching Mechanics
+
+Order matching is an event-driven process, meaning that once a new event occurs, then the order matching logic is run. The `OrderBook.matchOrders()` is run when:
+
+1. New order arrives to the order book
+   * *market order* - matched immediately against the best opposite side until filled or order book is empty (the price executed is then an weighted average price)
+   * *limit order* - check if the price improves or the condition of the limit is met against the opposite side
+2. Stop order triggered
+   * Convert the stop order into a market order, then run order matching
+3. Cancel/modification
+   * Cancel does not match (it only impacts future liquidity)
+   * Modify can trigger matcing if the modification crosses with opposite side
+
+##### New Order Logic
+
+1. Extract the order side to check the opposite order side
+2. While there is volume left on the opposite book and prices are compatible
+   1. Match with the best-priced existing order
+   2. Execute a trade at the resting order's price (not the incoming order price)
+   3. Update both order quantities
+   4. If the resting order is fully filled, remove it from the order book
+   5. If the incoming order is fully filled, stop order matching
+3. If the unfilled quantity remains in a ***limit order,*** add the remainder to the order book
+4. If the unfilled quantity is a ***market order***, discard the remainder (partial fill)
 
 ### Order Request/Response Message Structure
