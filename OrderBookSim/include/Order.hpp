@@ -1,3 +1,4 @@
+// Global Includes
 #include <string>
 
 /**
@@ -93,30 +94,16 @@ class Order {
          */
         std::string generateOrderId();
 
-        /**
-         * @brief Generates a timestamp using milliseconds duration.
-         *
-         * @return long - timestamp
-         */
-        long long getTimestamp();
-
-        /**
-         * @brief Generate the random 6-digit portion of the order ID.
-         *
-         * @return long long - random component of the order ID
-         */
-        long long generateRandomOrderId();
-
         // Bounds for randomizer
         static const int lowerBound = 100000;
         static const int upperBound = 999999;
 
         std::string orderId; // Order identifier
+        std::string symbol;  // Symbol of the security traded
         int qty;             // Quantity of the security to trade
         int remainingQty;    // Remaining quantity for partial fills
         long long timestamp; // Time order was created
         double price;        // Specified price to trade; relevant for price-contingent orders
-        std::string symbol;  // Symbol of the security traded
         bool filledStatus;   // True if the order is fully filled, false otherwise
 
         OrderSide orderSide; // Side of the order @see OrderSide

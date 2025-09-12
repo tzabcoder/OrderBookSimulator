@@ -96,9 +96,13 @@ class Order {
 
 The trade class is the structure for *executed* orders in the system. It contains information about the executed orders (buy and sell) and their agreed upon order details. The actions that can be performed on the trade are accessing trade attributes.
 
+Trade ID: {timestamp}_{random component}
+
+Example Trade ID: 1757529878230_698557
+
 ```cpp
 class Trade {
-	int tradeId;     // Trade identifier
+	string tradeId;  // Trade identifier
 	int qty;         // Quantity of the security matched (executed)
 	int buyOrderId;  // ID for the matched buy order
 	int sellOrderId; // ID for the matched sell order
