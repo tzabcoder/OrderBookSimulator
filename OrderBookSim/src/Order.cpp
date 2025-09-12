@@ -12,12 +12,12 @@ Order::Order (
     OrderSide side,
     OrderType type
 ) : orderId(""),
-    timestamp(0),
-    filledStatus(false),
     symbol(symbol),
     qty(qty),
     remainingQty(qty),
+    timestamp(0),
     price(price),
+    filledStatus(false),
     orderSide(side),
     orderType(type) {
 

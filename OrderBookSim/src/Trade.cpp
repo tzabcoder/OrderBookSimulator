@@ -12,11 +12,11 @@ Trade::Trade (
     int qty,
     double price
 ) : tradeId(""),
-    timestamp(0),
     buyOrderId(buyId),
     sellOrderId(sellId),
     symbol(symbol),
     qty(qty),
+    timestamp(0),
     price(price) {
 
     // Set the trade timestamp

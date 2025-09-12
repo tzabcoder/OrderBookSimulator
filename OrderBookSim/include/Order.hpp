@@ -94,10 +94,6 @@ class Order {
          */
         std::string generateOrderId();
 
-        // Bounds for randomizer
-        static const int lowerBound = 100000;
-        static const int upperBound = 999999;
-
         std::string orderId; // Order identifier
         std::string symbol;  // Symbol of the security traded
         int qty;             // Quantity of the security to trade
