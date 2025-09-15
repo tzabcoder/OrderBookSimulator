@@ -2,6 +2,13 @@
 
 **** Work in progress. ****
 
+Future features:
+
+* Agent can request open orders
+* Agent can request trade history
+* Agent can request order history
+* Multi-threaded OrderBookManager (multiple N client connections)
+
 ## Overview
 
 An order book is a list of open buy and sell orders for a particular security, organized by specific attributes such as price or quantity. As new orders are submitted from traders (agents), the order book is updated in real-time. It is a record of market depth and displays the overall supply and demand for the security. The inside quotes are the highest "bid" and lowest "ask" prices.
@@ -174,7 +181,7 @@ Order matching is an event-driven process, meaning that once a new event occurs,
    * Cancel does not match (it only impacts future liquidity)
    * Modify can trigger matcing if the modification crosses with opposite side
 
-##### New Order Logic
+##### Order Request Logic
 
 1. Extract the order side to check the opposite order side
 2. While there is volume left on the opposite book and prices are compatible
@@ -186,4 +193,80 @@ Order matching is an event-driven process, meaning that once a new event occurs,
 3. If the unfilled quantity remains in a ***limit order,*** add the remainder to the order book
 4. If the unfilled quantity is a ***market order***, discard the remainder (partial fill)
 
-### Order Request/Response Message Structure
+### Order Message Structures
+
+```cpp
+enum class ErrorCode {
+	OK,
+	BAD_REQUEST, // Invalid message structure (unable to process)
+	BAD_QTY,     // Invalid order quantity; must be positive
+	BAD_PRICE,   // Invalid order price; must be positive
+	BAD_SIDE,    // Invalid order side; See OrderSide
+	BAD_TYPE,    // Invalid order type; See OrderType
+	FATAL        // Unclassified fatal error
+};
+```
+
+##### Order Request
+
+The order request message is sent by the agent (client) to request a ***new*** order to the order book manager. This format below specifies the required message fields to submit a order. The message data type is a `struct`.
+
+* symbol - the symbol of the security to trade
+* qty - quantity of the security to trade
+* price - specified price to trade (although this is a required field, it is only used for *LIMIT*, *STOP*, and *ICEBERG*)
+* orderSide - see "*Supported Order Types*" section
+* orderType - see "*Supported Order Types*" section
+
+```cpp
+struct OrderRequest {
+	string symbol;
+	int qty;
+	double price;
+	OrderSide orderSide;
+	OrderType orderType;
+};
+```
+
+##### Order Modify
+
+The order modify message is sent by the agent (client) to request a ***modification*** to an existing order to the order book manager. The format below specifies the required message fields to modify an order. The message data type is a `struct`. An agent wanting to change any other order attribute will need to cancel the order and create a new one.
+
+NOTE: The agent is required to manage its own order IDs.
+
+* orderId - ID of the open order to change
+* qty - new quantity of the open order
+* price - new price of the open order (although this is a required field, it is only used for *LIMIT*, *STOP*, and *ICEBERG*)
+
+```cpp
+struct OrderModify {
+	string orderId;
+	int qty;
+	double price;
+};
+```
+
+##### Order Cancel
+
+The order cancel message is sent by the agent (client) to request a ***cancellation*** of an open order. The format below specifies the required message fields for cancelling an open order. The message data type is a `struct`.
+
+* orderId - ID of the open order to cancel
+
+```cpp
+struct OrderCancel {
+	string orderId;
+};
+```
+
+##### Order Response
+
+The order response message is sent by the order book manager (server). The format specifies the action details of the order modify or an order request made by the agent (client). The format below specifies the fields of the message result. The message data type is a `struct`.
+
+* orderId - ID of the order processed (new order ID or order ID of modified)
+* errCode - code of the resulting request. See "*ErrorCode*" section for more information.
+
+```cpp
+struct OrderResponse {
+	string orderId;
+	ErrorCode errCode;
+};
+```
