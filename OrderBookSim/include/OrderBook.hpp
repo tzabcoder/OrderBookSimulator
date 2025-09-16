@@ -74,21 +74,49 @@ class OrderBook {
          * @param orderId - ID of the order to cancel
          * @param errCode - result status; populated in the function
          *
-         * @return bool - True if order was canceled, False if not canceled
+         * @return std::string - order ID of the canceled order, "" if invalid
          */
-        bool cancelOrder(
+        std::string cancelOrder(
             std::string orderId,
             ErrorCode& errCode
         );
 
     private:
-        // Match Orders (event-driven)
-        void matchOrders();
+        /**
+         * @brief Find an order in the order book.
+         *
+         * @param orderId - order ID for order to find
+         *
+         * @return Order* - pointer to the order; nullptr if order does not exist
+         */
+        Order* findOrder(std::string orderId);
+
+        void matchOrders(Order& order);
 
         void addOrderToBook(Order& order);
 
+        /**
+         * @brief Remove an order from the order book.
+         * NOTE: Order details are validated before removal.
+         *
+         * @param order - order to remove from the order book
+         */
+        void removeOrderFromBook(Order& order);
+
+        /**
+         * @brief Log an order to the order history. The log stores the order
+         * details to file.
+         *
+         * @param order - order to log to order history.
+         */
         void logOrderHistory(Order& order);
 
+        /**
+         * @brief Log a trade to the trade history. The log stores the trade
+         * details to file.
+         *
+         * @param trade - trade to log to trade history.
+         */
         void logTradeHistory(Trade& trade);
 
         std::string exchangeSymbol; // Symbol for the order book's traded security

@@ -45,6 +45,14 @@ void Order::updateOrderStatus(bool status) {
     filledStatus = status;
 }
 
+void Order::updateQty(int t_qty) {
+    qty = t_qty;
+}
+
+void Order::updatePrice(double t_price) {
+    price = t_price;
+}
+
 std::string Order::getOrderId() const {
     return orderId;
 }

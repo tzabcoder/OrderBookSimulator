@@ -41,6 +41,20 @@ class Order {
         void updateOrderStatus(bool status);
 
         /**
+         * @brief Updates the order's quanity. Used for order modifications.
+         *
+         * @param t_qty - new order quantity
+         */
+        void updateQty(int t_qty);
+
+        /**
+         * @brief Updates the prder's price. Used for order modifications.
+         *
+         * @param t_price - new order price
+         */
+        void updatePrice(double t_price);
+
+        /**
          * @brief Accessor functions for the order object (getters).
          *
          * getOrderId() - gets this order's identifier

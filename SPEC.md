@@ -7,6 +7,7 @@ Future features:
 * Agent can request open orders
 * Agent can request trade history
 * Agent can request order history
+* Imporved OrderBook efficiency (hash map)
 * Multi-threaded OrderBookManager (multiple N client connections)
 
 ## Overview
