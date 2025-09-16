@@ -1,6 +1,9 @@
 // Global Includes
 #include <string>
 
+// Project Includes
+#include <utils.hpp>
+
 class Trade {
     public:
         /**

@@ -1,8 +1,33 @@
 // Global Includes
 #include <string>
 
-// Local Includes
-#include <Order.hpp>
+#ifndef TYPES_HPP
+#define TYPES_HPP
+
+/**
+ * @brief Specifies the values for valid order sides.
+ */
+enum class OrderSide {
+    BUY,
+    SELL
+};
+
+/**
+ * @brief Specifies the values for valid order types.
+ *
+ * @note The following order tyes REQUIRE an order price:
+ *    - LIMIT
+ *    - STOP
+ *    - ICEBERG
+ */
+enum class OrderType {
+    MARKET,
+    LIMIT,
+    STOP,
+    FOK,   // Fill-or-kill
+    IOC,   // Immediate-or-cancel
+    ICEBERG
+};
 
 /**
  * @brief Error codes used for identifying request processing statuses
@@ -15,6 +40,7 @@ enum class ErrorCode {
 	BAD_PRICE,   // Invalid order price; must be positive
 	BAD_SIDE,    // Invalid order side; See OrderSide
 	BAD_TYPE,    // Invalid order type; See OrderType
+    BAD_ID,      // Invalid order ID
     FATAL        // Unclassified fatal internal error
 };
 
@@ -56,3 +82,5 @@ struct OrderResponse {
     std::string orderId; // ID of the order processed
     ErrorCode errCode;   // Response code of the request
 };
+
+#endif

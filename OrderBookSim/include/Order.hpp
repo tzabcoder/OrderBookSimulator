@@ -1,30 +1,9 @@
 // Global Includes
 #include <string>
 
-/**
- * @brief Specifies the values for valid order sides.
- */
-enum class OrderSide {
-    BUY,
-    SELL
-};
-
-/**
- * @brief Specifies the values for valid order types.
- *
- * @note The following order tyes REQUIRE an order price:
- *    - LIMIT
- *    - STOP
- *    - ICEBERG
- */
-enum class OrderType {
-    MARKET,
-    LIMIT,
-    STOP,
-    FOK,   // Fill-or-kill
-    IOC,   // Immediate-or-cancel
-    ICEBERG
-};
+// Project Includes
+#include <Types.hpp>
+#include <utils.hpp>
 
 class Order {
     public:

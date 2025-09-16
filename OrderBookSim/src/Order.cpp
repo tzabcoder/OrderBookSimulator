@@ -3,7 +3,6 @@
 
 // Project Includes
 #include <Order.hpp>
-#include <utils.hpp>
 
 Order::Order (
     std::string symbol,

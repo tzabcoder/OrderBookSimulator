@@ -1,3 +1,5 @@
+// Project Includes
+#include <Types.hpp>
 
 namespace utils {
     /**
@@ -16,4 +18,24 @@ namespace utils {
      * @return long long - timesamp in millisecond format
      */
     long long generateMSTimestamp();
+
+    /**
+     * @brief Validate whether an order side is within the
+     * OrderSide enumeration.
+     *
+     * @param side - order side to validate
+     *
+     * @return bool - true if order side exists; false otherwise
+     */
+    bool validOrderSide(OrderSide side);
+
+    /**
+     * @brief Validate whether an order type is within the
+     * OrderType enumeration.
+     *
+     * @param type - order type to validate
+     *
+     * @return bool - true if order type exists; false otherwise
+     */
+    bool validOrderType(OrderType type);
 };

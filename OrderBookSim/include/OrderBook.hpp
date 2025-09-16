@@ -4,8 +4,10 @@
 #include <vector>
 
 // Project Includes
+#include <Types.hpp>
 #include <Order.hpp>
 #include <Trade.hpp>
+#include <utils.hpp>
 
 class OrderBook {
     public:
@@ -24,11 +26,13 @@ class OrderBook {
          * in the order history.
          * Once the order is added to the order book, the match orders event
          * is processed.
+         * NOTE: Order parameters are validated before order processing.
          *
          * @param qty - quantity of the new order
-         * @param price - price for order to execute; @see OrderType
+         * @param price - price for order to execute; @see OrderType for use
          * @param side - side of the order; @see OrderSide
          * @param type - type of the order; @see OrderType
+         * @param errCode - result status; populated in the function
          *
          * @return std::string - new order ID, "" if fatal error
          */
@@ -36,7 +40,8 @@ class OrderBook {
             int qty,
             double price,
             OrderSide side,
-            OrderType type
+            OrderType type,
+            ErrorCode& errCode
         );
 
         /**
@@ -50,21 +55,41 @@ class OrderBook {
          * @param qty - quantity of the order
          * @param price - price of the order; Only used for certian order types
          *                @see OrderType
+         * @param errCode - result status; populated in the function
          *
-         * @return std::string - order ID if modified order, "" if fatal error
+         * @return std::string - order ID if modified order, "" if invalid
          */
         std::string modifyOrder(
             std::string orderId,
             int qty,
-            double price
+            double price,
+            ErrorCode& errCode
         );
 
-        // Cancel Order
-        bool cancelOrder();
+        /**
+         * @brief Cancel an outstanding order for this order book. The order ID is
+         * checked to determine if there is a valid order. If valid, the order is
+         * canceled and removed from the order book.
+         *
+         * @param orderId - ID of the order to cancel
+         * @param errCode - result status; populated in the function
+         *
+         * @return bool - True if order was canceled, False if not canceled
+         */
+        bool cancelOrder(
+            std::string orderId,
+            ErrorCode& errCode
+        );
 
     private:
         // Match Orders (event-driven)
         void matchOrders();
+
+        void addOrderToBook(Order& order);
+
+        void logOrderHistory(Order& order);
+
+        void logTradeHistory(Trade& trade);
 
         std::string exchangeSymbol; // Symbol for the order book's traded security
 

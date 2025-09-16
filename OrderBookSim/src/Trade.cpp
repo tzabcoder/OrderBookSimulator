@@ -3,7 +3,6 @@
 
 // Project Includes
 #include <Trade.hpp>
-#include <utils.hpp>
 
 Trade::Trade (
     std::string symbol,
