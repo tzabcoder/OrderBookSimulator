@@ -4,6 +4,7 @@
 // Project Includes
 #include <Order.hpp>
 
+//#########################################################################
 Order::Order (
     std::string symbol,
     int qty,
@@ -27,6 +28,7 @@ Order::Order (
     orderId = generateOrderId();
 }
 
+//#########################################################################
 std::string Order::generateOrderId() {
     std::stringstream order_oss;
 
@@ -37,54 +39,67 @@ std::string Order::generateOrderId() {
     return order_oss.str();
 }
 
+//#########################################################################
 void Order::updateRemainingQty(int executedQty) {
     remainingQty = remainingQty - executedQty;
 }
 
+//#########################################################################
 void Order::updateOrderStatus(bool status) {
     filledStatus = status;
 }
 
+//#########################################################################
 void Order::updateQty(int t_qty) {
     qty = t_qty;
 }
 
+//#########################################################################
 void Order::updatePrice(double t_price) {
     price = t_price;
 }
 
+//#########################################################################
 std::string Order::getOrderId() const {
     return orderId;
 }
 
+//#########################################################################
 int Order::getOrderQty() const {
     return qty;
 }
 
+//#########################################################################
 int Order::getOrderRemainingQty() const {
     return remainingQty;
 }
 
+//#########################################################################
 long long Order::getOrderTimestamp() const {
     return timestamp;
 }
 
+//#########################################################################
 double Order::getOrderPrice() const {
     return price;
 }
 
+//#########################################################################
 std::string Order::getOrderSymbol() const {
     return symbol;
 }
 
+//#########################################################################
 bool Order::getOrderStatus() const {
     return filledStatus;
 }
 
+//#########################################################################
 OrderSide Order::getOrderSide() const {
     return orderSide;
 }
 
+//#########################################################################
 OrderType Order::getOrderType() const {
     return orderType;
 }

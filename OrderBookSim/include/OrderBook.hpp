@@ -1,6 +1,8 @@
 // Global Includes
 #include <list>
+#include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 // Project Includes
@@ -93,7 +95,15 @@ class OrderBook {
 
         void matchOrders(Order& order);
 
-        void addOrderToBook(Order& order);
+        /**
+         * @brief Inserts an order into the order book based on price-time priority. The
+         * order's price is the first (primary) indexer and the time of arrival is the
+         * second indexer for the order book.
+         * Each price in the order book has a list of associated orders.
+         *
+         * @param order - order to insert into the order book
+         */
+        void insertOrder(Order& order);
 
         /**
          * @brief Remove an order from the order book.
@@ -101,7 +111,7 @@ class OrderBook {
          *
          * @param order - order to remove from the order book
          */
-        void removeOrderFromBook(Order& order);
+        void removeOrder(Order& order);
 
         /**
          * @brief Log an order to the order history. The log stores the order
@@ -121,8 +131,13 @@ class OrderBook {
 
         std::string exchangeSymbol; // Symbol for the order book's traded security
 
-        std::list<Order> buyOrders;  // List of all active buy orders
-        std::list<Order> sellOrders; // List of all active sell orders
+        // Key => price, value => list of orders at that price, sorted by time
+        std::map<double, std::list<Order>> buyOrders;  // List of all active buy orders
+        std::map<double, std::list<Order>> sellOrders; // List of all active sell orders
+
+        // Map of Order IDs and their indexes
+        // Key => order ID, value => pair(price, pointer index)
+        std::unordered_map<std::string, std::pair<double, std::list<Order>::iterator>> orderIndex;
 
         std::vector<Order> orderHistory; // History of all orders in the order book
         std::vector<Trade> tradeHistory; // History of all trades in the order book (matched orders)

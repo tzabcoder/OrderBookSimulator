@@ -4,6 +4,7 @@
 // Project Includes
 #include <Trade.hpp>
 
+//#########################################################################
 Trade::Trade (
     std::string symbol,
     std::string buyId,
@@ -25,6 +26,7 @@ Trade::Trade (
     tradeId = generateTradeId();
 }
 
+//#########################################################################
 std::string Trade::generateTradeId() {
     std::stringstream trade_oss;
 
@@ -35,30 +37,37 @@ std::string Trade::generateTradeId() {
     return trade_oss.str();
 }
 
+//#########################################################################
 std::string Trade::getTradeId() {
     return tradeId;
 }
 
+//#########################################################################
 std::string Trade::getBuyOrderId() {
     return buyOrderId;
 }
 
+//#########################################################################
 std::string Trade::getSellOrderId() {
     return sellOrderId;
 }
 
+//#########################################################################
 std::string Trade::getSymbol() {
     return symbol;
 }
 
+//#########################################################################
 int Trade::getQty() {
     return qty;
 }
 
+//#########################################################################
 long long Trade::getTimestamp() {
     return timestamp;
 }
 
+//#########################################################################
 double Trade::getPrice() {
     return price;
 }

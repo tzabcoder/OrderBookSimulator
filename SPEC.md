@@ -137,11 +137,14 @@ The match orders function is event driven. See the Order matching mechanics sect
 
 ```cpp
 class OrderBook {
-	string instrumentSymbol;         // Symbol for the order book's security
-	std::list<Order> buyOrders;      // Active buy orders; sorted by price, then by time
-	std::list<Order> sellOrders;     // Active sell orders; sorted by price, then by time
-	std::vector<Trade> tradeHistory; // History of all trades in the order book (matched orders)
-	std::vector<Order> orderHistory; // History of all orders in the order book (all order arrivals)
+	string instrumentSymbol;                       // Symbol for the order book's security
+	std::map<double, std::list<Order>> buyOrders;  // Active buy orders; sorted by price, then by time
+	std::map<double, std::list<Order>> sellOrders; // Active sell orders; sorted by price, then by time
+	std::vector<Trade> tradeHistory;               // History of all trades in the order book (matched orders)
+	std::vector<Order> orderHistory;               // History of all orders in the order book (all order arrivals)
+
+	// Map of order IDs and their price and index
+	std::unordered_map<std::string, std::pair<double, std::list<Order>::iterator>> orderIndex;
 };
 ```
 

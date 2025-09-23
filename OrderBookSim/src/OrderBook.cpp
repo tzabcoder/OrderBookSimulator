@@ -1,6 +1,9 @@
 // Project Includes
 #include <OrderBook.hpp>
 
+#include <iostream>
+
+//#########################################################################
 OrderBook::OrderBook (std::string exchangeSymbol) :
     exchangeSymbol(exchangeSymbol),
     buyOrders(),
@@ -8,6 +11,7 @@ OrderBook::OrderBook (std::string exchangeSymbol) :
     orderHistory(),
     tradeHistory() {}
 
+//#########################################################################
 std::string OrderBook::createOrder(
     int qty,
     double price,
@@ -51,6 +55,7 @@ std::string OrderBook::createOrder(
     return orderId;
 }
 
+//#########################################################################
 std::string OrderBook::modifyOrder(
     std::string orderId,
     int qty,
@@ -91,6 +96,7 @@ std::string OrderBook::modifyOrder(
     return m_orderId;
 }
 
+//#########################################################################
 std::string OrderBook::cancelOrder(
     std::string orderId,
     ErrorCode& errCode
@@ -101,7 +107,7 @@ std::string OrderBook::cancelOrder(
     Order* order = findOrder(orderId);
 
     if (order) {
-        removeOrderFromBook(*order);
+        removeOrder(*order);
 
         errCode = ErrorCode::OK;
     }
@@ -113,59 +119,72 @@ std::string OrderBook::cancelOrder(
     return m_orderId;
 }
 
+//#########################################################################
 Order* OrderBook::findOrder(std::string orderId) {
-    // Check the BUY orders
-    for (Order& t_order : buyOrders) {
-        if (t_order.getOrderId() == orderId) {
-            return &t_order;
-        }
-    }
+    auto index = orderIndex.find(orderId);
 
-    // Check SELL orders
-    for (Order& t_order: sellOrders) {
-        if (t_order.getOrderId() == orderId) {
-            return &t_order;
-        }
+    if (index != orderIndex.end()) {
+        auto [price, orderIterator] = index->second;
+
+        return &(*orderIterator);
     }
 
     return nullptr;
 }
 
+//#########################################################################
 void OrderBook::matchOrders(Order& order) {
-
+    std::cout << "Matching Orders..." << std::endl;
 }
 
-void OrderBook::addOrderToBook(Order& order) {
+//#########################################################################
+void OrderBook::insertOrder(Order& order) {
+    // Get the correct book side
+    auto& book = (order.getOrderSide() == OrderSide::BUY) ? buyOrders : sellOrders;
 
+    // Get the orders associated with the order price
+    // If no orders, create a new list for the price level
+    auto& priceOrders = book[order.getOrderPrice()];
+    priceOrders.push_back(order);
+
+    // Save the iterator to the newly inserted order
+    auto iterator = std::prev(priceOrders.end());
+    orderIndex[order.getOrderId()] = {order.getOrderPrice(), iterator};
 }
 
-void OrderBook::removeOrderFromBook(Order& order) {
-    // BUY side
-    if (order.getOrderSide() == OrderSide::BUY) {
-        for (auto iter = buyOrders.begin(); iter != buyOrders.end(); iter++) {
-            if (iter->getOrderId() == order.getOrderId()) {
-                // Erase the order and terminate
-                buyOrders.erase(iter);
-                return;
-            }
+//#########################################################################
+void OrderBook::removeOrder(Order& order) {
+    // Get the correct book side
+    auto& book = (order.getOrderSide() == OrderSide::BUY) ? buyOrders : sellOrders;
+
+    std::string cancelId = order.getOrderId();
+
+    auto index = orderIndex.find(cancelId);
+
+    if (index != orderIndex.end()) {
+        // Extract the order details
+        auto [price, orderIterator] = index->second;
+
+        // Remove order from the book
+        auto& priceOrders = book[price];
+        priceOrders.erase(orderIterator);
+
+        // If there are no more orders for the price level, remove the price
+        if (priceOrders.empty()) {
+            book.erase(price);
         }
-    }
-    // SELL side
-    else {
-        for (auto iter = sellOrders.begin(); iter != sellOrders.end(); iter++) {
-            if (iter->getOrderId() == order.getOrderId()) {
-                // Erase the order and terminate
-                sellOrders.erase(iter);
-                return;
-            }
-        }
+
+        // Remove the order ID
+        orderIndex.erase(index);
     }
 }
 
+//#########################################################################
 void OrderBook::logOrderHistory(Order& order) {
     orderHistory.push_back(order);
 }
 
+//#########################################################################
 void OrderBook::logTradeHistory(Trade& trade) {
     tradeHistory.push_back(trade);
 }
