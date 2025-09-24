@@ -30,6 +30,16 @@ enum class OrderType {
 };
 
 /**
+ * @brief Specifies the status of the order events in the order
+ * book.
+ */
+enum class OrderStatus {
+    CREATE,
+    MODIFY,
+    CANCEL
+};
+
+/**
  * @brief Error codes used for identifying request processing statuses
  * to return to clients.
  */

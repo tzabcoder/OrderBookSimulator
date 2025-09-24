@@ -93,6 +93,15 @@ class OrderBook {
          */
         Order* findOrder(std::string orderId);
 
+        /**
+         * @brief Match order logic for filling orders in the order book. Orders are filled
+         * based on price-time priority. The order matching is run only when a new order is
+         * created or an existing order is modified.
+         * NOTE: Any partial fills for market orders will discard the remainder. Limit orders
+         * are added to the order book.
+         *
+         * @param order - order that was updated/created
+         */
         void matchOrders(Order& order);
 
         /**
@@ -113,22 +122,6 @@ class OrderBook {
          */
         void removeOrder(Order& order);
 
-        /**
-         * @brief Log an order to the order history. The log stores the order
-         * details to file.
-         *
-         * @param order - order to log to order history.
-         */
-        void logOrderHistory(Order& order);
-
-        /**
-         * @brief Log a trade to the trade history. The log stores the trade
-         * details to file.
-         *
-         * @param trade - trade to log to trade history.
-         */
-        void logTradeHistory(Trade& trade);
-
         std::string exchangeSymbol; // Symbol for the order book's traded security
 
         // Key => price, value => list of orders at that price, sorted by time
@@ -139,6 +132,6 @@ class OrderBook {
         // Key => order ID, value => pair(price, pointer index)
         std::unordered_map<std::string, std::pair<double, std::list<Order>::iterator>> orderIndex;
 
-        std::vector<Order> orderHistory; // History of all orders in the order book
-        std::vector<Trade> tradeHistory; // History of all trades in the order book (matched orders)
+        std::vector<std::pair<OrderStatus, Order>> orderHistory; // History of all order events in the order book
+        std::vector<Trade> tradeHistory;                         // History of all trades in the order book (matched orders)
 };

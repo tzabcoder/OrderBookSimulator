@@ -93,6 +93,7 @@ class Order {
 	int remainingQty;    // Remaining quantity for partial fills
 	long long timestamp; // Time order was created
 	double price;        // Specified price to trade; relevant for certian order types
+	double fillPrice;    // Weighted average of price order was filled
 	string symbol;       // Symbol of the instrument traded
 	bool filled;         // True if FULLY filled, false otherwise
 	OrderSide orderSide; // Buy or Sell

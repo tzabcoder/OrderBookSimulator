@@ -55,6 +55,15 @@ class Order {
         void updatePrice(double t_price);
 
         /**
+         * @brief Updates the prder's fill price. Used for updating the average
+         * price the order was filled. Weighted average and computed as:
+         * SUM(shares * price) / total shares
+         *
+         * @param t_price - new order price
+         */
+        void updateFillPrice(double t_price);
+
+        /**
          * @brief Accessor functions for the order object (getters).
          *
          * getOrderId() - gets this order's identifier
@@ -62,6 +71,7 @@ class Order {
          * getOrderRemainingQty() - gets the remaining order quantity for the order (partial fills)
          * getOrderTimestamp() - gets this orders timestamp (when order was creted on the server)
          * getOrderPrice() - gets the price to execute order (for price conditional orders)
+         * getOrderFillPrice() - gets the average price the order was filled at (weighted average)
          * getOrderSymbol() - gets the symbol for the security
          * getOrderStatus() - gets the order status; true if fully filled, false otherwise
          * getOrderSide() - gets the side of the order
@@ -72,6 +82,7 @@ class Order {
         int getOrderRemainingQty() const;
         long long getOrderTimestamp() const;
         double getOrderPrice() const;
+        double getOrderFillPrice() const;
         std::string getOrderSymbol() const;
         bool getOrderStatus() const;
         OrderSide getOrderSide() const;
@@ -93,6 +104,7 @@ class Order {
         int remainingQty;    // Remaining quantity for partial fills
         long long timestamp; // Time order was created
         double price;        // Specified price to trade; relevant for price-contingent orders
+        double fillPrice;    // Weighted average of price order was filled
         bool filledStatus;   // True if the order is fully filled, false otherwise
 
         OrderSide orderSide; // Side of the order @see OrderSide

@@ -1,8 +1,6 @@
 // Project Includes
 #include <OrderBook.hpp>
 
-#include <iostream>
-
 //#########################################################################
 OrderBook::OrderBook (std::string exchangeSymbol) :
     exchangeSymbol(exchangeSymbol),
@@ -43,6 +41,7 @@ std::string OrderBook::createOrder(
             side,
             type
         );
+        orderHistory.push_back({OrderStatus::CREATE, newOrder});
 
         orderId = newOrder.getOrderId();
 
@@ -79,6 +78,7 @@ std::string OrderBook::modifyOrder(
             // Update the order attributes
             order->updateQty(qty);
             order->updatePrice(price);
+            orderHistory.push_back({OrderStatus::MODIFY, *order});
 
             m_orderId = order->getOrderId();
 
@@ -105,6 +105,7 @@ std::string OrderBook::cancelOrder(
 
     // Validate the order exists
     Order* order = findOrder(orderId);
+    orderHistory.push_back({OrderStatus::CANCEL, *order});
 
     if (order) {
         removeOrder(*order);
@@ -134,7 +135,95 @@ Order* OrderBook::findOrder(std::string orderId) {
 
 //#########################################################################
 void OrderBook::matchOrders(Order& order) {
-    std::cout << "Matching Orders..." << std::endl;
+    // Average execution price
+    int totalShares = order.getOrderQty() - order.getOrderRemainingQty();
+    double totalValue = order.getOrderFillPrice();
+
+    // Opposite order book
+    auto& oppBook = (order.getOrderSide() == OrderSide::BUY) ? sellOrders : buyOrders;
+
+    // Loop through the order book prices (while there is an remaining order quantity)
+    for (auto bookItr = oppBook.begin(); bookItr != oppBook.end() && order.getOrderRemainingQty() > 0;) {
+        // Check price crossing conditions
+        bool priceCross = (order.getOrderSide() == OrderSide::BUY)
+                          ? (order.getOrderPrice() >= bookItr->first)
+                          : (order.getOrderPrice() <= bookItr->first);
+
+        if (order.getOrderType() == OrderType::LIMIT ||
+            order.getOrderType() == OrderType::STOP  ||
+            order.getOrderType() == OrderType::ICEBERG) {
+
+            if (!priceCross) {
+                break;
+            }
+        }
+
+        auto& restingOrders = bookItr->second;
+
+        // Loop through the resting orders at the given price level
+        for (auto restingItr = restingOrders.begin(); restingItr != restingOrders.end() && order.getOrderRemainingQty() > 0;) {
+            // Get the resting order
+            Order& restingOrder = *restingItr;
+
+            int matchQty = std::min(order.getOrderRemainingQty(), restingOrder.getOrderRemainingQty());
+            totalShares += matchQty;
+
+            // Create the trade object
+            std::string buyId = (order.getOrderSide() == OrderSide::BUY) ? order.getOrderId() : restingOrder.getOrderId();
+            std::string sellId = (order.getOrderSide() == OrderSide::SELL) ? order.getOrderId() : restingOrder.getOrderId();
+
+            Trade trade(
+                exchangeSymbol,
+                buyId,
+                sellId,
+                matchQty,
+                restingOrder.getOrderPrice()
+            );
+            tradeHistory.push_back(trade);
+
+            // Execute the trade
+            order.updateRemainingQty(matchQty);
+            restingOrder.updateRemainingQty(matchQty);
+            totalValue += restingOrder.getOrderPrice() * matchQty;
+
+            // Fully filled resting order
+            if (restingOrder.getOrderRemainingQty() == 0) {
+                orderIndex.erase(restingOrder.getOrderId());
+                restingItr = restingOrders.erase(restingItr);
+            }
+            else {
+                // Move to the next order (at the current price level)
+                restingItr++;
+            }
+        }
+
+        // Fully exhausted all orders at the current price level
+        if (restingOrders.empty()) {
+            bookItr = oppBook.erase(bookItr);
+        }
+        else {
+            // Move to the next price level
+            bookItr++;
+        }
+    }
+
+    if (totalShares > 0) {
+        order.updateFillPrice(totalValue / totalShares);
+    }
+
+    // Partial order fill
+    // Partial market orders are thrown away
+    if (order.getOrderRemainingQty() > 0) {
+        if (order.getOrderType() == OrderType::LIMIT) {
+            insertOrder(order);
+        }
+
+        order.updateOrderStatus(false);
+    }
+    // Fully filled
+    else {
+        order.updateOrderStatus(true);
+    }
 }
 
 //#########################################################################
@@ -177,14 +266,4 @@ void OrderBook::removeOrder(Order& order) {
         // Remove the order ID
         orderIndex.erase(index);
     }
-}
-
-//#########################################################################
-void OrderBook::logOrderHistory(Order& order) {
-    orderHistory.push_back(order);
-}
-
-//#########################################################################
-void OrderBook::logTradeHistory(Trade& trade) {
-    tradeHistory.push_back(trade);
 }

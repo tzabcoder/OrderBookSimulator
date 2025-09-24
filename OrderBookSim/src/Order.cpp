@@ -17,6 +17,7 @@ Order::Order (
     remainingQty(qty),
     timestamp(0),
     price(price),
+    fillPrice(0.00),
     filledStatus(false),
     orderSide(side),
     orderType(type) {
@@ -60,6 +61,11 @@ void Order::updatePrice(double t_price) {
 }
 
 //#########################################################################
+void Order::updateFillPrice(double t_price) {
+    fillPrice = t_price;
+}
+
+//#########################################################################
 std::string Order::getOrderId() const {
     return orderId;
 }
@@ -82,6 +88,11 @@ long long Order::getOrderTimestamp() const {
 //#########################################################################
 double Order::getOrderPrice() const {
     return price;
+}
+
+//#########################################################################
+double Order::getOrderFillPrice() const {
+    return fillPrice;
 }
 
 //#########################################################################
