@@ -36,7 +36,7 @@ class OrderBook {
          * @param type - type of the order; @see OrderType
          * @param errCode - result status; populated in the function
          *
-         * @return std::string - new order ID, "" if fatal error
+         * @return std::string - new order ID, "-1" if fatal error
          */
         std::string createOrder(
             int qty,
@@ -59,7 +59,7 @@ class OrderBook {
          *                @see OrderType
          * @param errCode - result status; populated in the function
          *
-         * @return std::string - order ID if modified order, "" if invalid
+         * @return std::string - order ID if modified order, "-1" if invalid
          */
         std::string modifyOrder(
             std::string orderId,
@@ -76,7 +76,7 @@ class OrderBook {
          * @param orderId - ID of the order to cancel
          * @param errCode - result status; populated in the function
          *
-         * @return std::string - order ID of the canceled order, "" if invalid
+         * @return std::string - order ID of the canceled order, "-1" if invalid
          */
         std::string cancelOrder(
             std::string orderId,

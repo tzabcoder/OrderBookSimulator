@@ -17,7 +17,7 @@ std::string OrderBook::createOrder(
     OrderType type,
     ErrorCode& errCode
 ) {
-    std::string orderId = "";
+    std::string orderId = "-1";
 
     // Validate order parameters
     if (qty <= 0) {
@@ -61,7 +61,7 @@ std::string OrderBook::modifyOrder(
     double price,
     ErrorCode& errCode
 ) {
-    std::string m_orderId = "";
+    std::string m_orderId = "-1";
 
     // Validate the order exists
     Order* order = findOrder(orderId);
@@ -101,7 +101,7 @@ std::string OrderBook::cancelOrder(
     std::string orderId,
     ErrorCode& errCode
 ) {
-    std::string m_orderId = "";
+    std::string m_orderId = "-1";
 
     // Validate the order exists
     Order* order = findOrder(orderId);

@@ -21,4 +21,10 @@ For a technical details, see [Specification Document (SPEC.md)](https://github.c
 
 ##### Order Book
 
+./orderBook -p <port_number> -s <symbol_1> <symbol_2> ... <symbol_N>
+
+-p specifies the port for the order book manager to listen on; optional; default=8080
+
+-s specifies the symbol list; creates an order book for each symbol; required; no default
+
 ##### Agent

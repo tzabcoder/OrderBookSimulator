@@ -6,7 +6,7 @@ REM ===============================
 set "SRC_DIR=src"
 set "INCLUDE_DIR=include"
 set "BUILD_DIR=build"
-set "OUTPUT_EXE=%BUILD_DIR%\ob_sim.exe"
+set "OUTPUT_EXE=%BUILD_DIR%\orderBook.exe"
 
 REM ===============================
 REM Creating /build
@@ -41,7 +41,7 @@ REM ===============================
 echo ===============================
 echo Linking object files...
 echo ===============================
-g++ "%BUILD_DIR%\*.o" -o "%OUTPUT_EXE%"
+g++ "%BUILD_DIR%\*.o" -o "%OUTPUT_EXE%" -lws2_32
 if errorlevel 1 (
     echo Linking failed.
     exit /b 1
