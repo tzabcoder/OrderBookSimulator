@@ -16,17 +16,21 @@
  * -p (port) : port for the order book simulator
  * -s (symbols) : symbols for the order books (will
  * create one for each symbol)
+ * -l : for order book manager console logging
  *
  * @return int - engine status code
  */
 int main(int argc, char* argv[]) {
+    // Default parameters
     int port = 8080;
-    std::vector<std::string> exchangeSymbols;
+    bool consoleLog = true; // TEST => will be set to false
+    std::vector<std::string> exchangeSymbols = {"TEMP"}; // TEST => will be empty
 
     // Create the new order book manager
     OrderBookManager obManager = OrderBookManager(
         port,
-        exchangeSymbols
+        exchangeSymbols,
+        consoleLog
     );
 
     // Run the order book manager

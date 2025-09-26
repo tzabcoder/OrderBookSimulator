@@ -21,10 +21,14 @@ For a technical details, see [Specification Document (SPEC.md)](https://github.c
 
 ##### Order Book
 
-./orderBook -p <port_number> -s <symbol_1> <symbol_2> ... <symbol_N>
+`./orderBook -s <symbol_1> <symbol_2> ... <symbol_N> -p <port_number> -l`
+
+-s specifies the symbol list; creates an order book for each symbol; required; no default
 
 -p specifies the port for the order book manager to listen on; optional; default=8080
 
--s specifies the symbol list; creates an order book for each symbol; required; no default
+-l is a flag for logging to console; optional; default=false
+
+Ex: `./orderBook -s TEMP1 TEMP2 -p 5555 -l`
 
 ##### Agent

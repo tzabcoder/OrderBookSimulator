@@ -46,6 +46,7 @@
         "random": "cpp",
         "iostream": "cpp",
         "list": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "iomanip": "cpp"
     }
 }
