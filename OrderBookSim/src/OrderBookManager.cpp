@@ -8,6 +8,7 @@ OrderBookManager::OrderBookManager (
     bool logging
 ) : logging(logging),
     obmPort(port),
+    BUFFER_SIZE(1024),
     obmSocket(INVALID_SOCKET) {
 
     // Create the Order Book Map
@@ -20,6 +21,11 @@ OrderBookManager::~OrderBookManager() {
 }
 
 //#########################################################################
+OrderResponse OrderBookManager::handleMessage(std::string& buffer) {
+    return {};
+}
+
+//#########################################################################
 void OrderBookManager::startListener() {
     logMessage(LogLevel::INFO,
                "startListener(): Starting OBM listener socket...",
@@ -29,9 +35,43 @@ void OrderBookManager::startListener() {
 
     while (true) {
         // Accept client connection
-        // Read Order request
-        // Process order request
-        // Send order response
+        SOCKET clientSocket = accept(obmSocket, nullptr, nullptr);
+
+        if (clientSocket == INVALID_SOCKET) {
+            logMessage(LogLevel::ERR,
+                       "startListener(): failed to accept client connection...",
+                       logging);
+        }
+        // Client socket connected
+        else {
+            logMessage(LogLevel::INFO,
+                       "startListener(): Client socket connected.",
+                       logging);
+
+            // Read string from the socket
+            char rcvBuffer[BUFFER_SIZE];
+            int bytesRcv = recv(clientSocket, rcvBuffer, sizeof(rcvBuffer), 0);
+
+            if (bytesRcv > 0) {
+                std::string buffer(rcvBuffer, bytesRcv);
+
+                // Handle the order request message
+                OrderResponse response = handleMessage(buffer);
+
+                // Write the response to the socket
+                std::string responseBuffer = serialize(response);
+                send(clientSocket, responseBuffer.data(), static_cast<int>(responseBuffer.size()), 0);
+
+                logMessage(LogLevel::INFO,
+                           "startListener(): Sent OrderResponse to client.",
+                           logging);
+            }
+            else {
+                logMessage(LogLevel::INFO,
+                           "startListener(): Failed to read buffer from socket...",
+                           logging);
+            }
+        }
     }
 
     cleanupSocket();
@@ -115,4 +155,57 @@ int OrderBookManager::cleanupSocket() {
                logging);
 
     return -1; // No socket to close
+}
+
+//#########################################################################
+std::string OrderBookManager::serialize(const OrderResponse& response) {
+    // Explicitly compute the buffer size
+    constexpr size_t buffSize = sizeof(response.orderId) + sizeof(response.errCode);
+
+    // Create the buffer
+    std::string buffer(buffSize, '\0');
+    size_t offset = 0;
+
+    // Serialize the order response values
+    memcpy(&buffer[offset], &response.orderId, sizeof(response.orderId));
+    offset += sizeof(response.orderId);
+
+    memcpy(&buffer[offset], &response.errCode, sizeof(response.errCode));
+    offset += sizeof(response.errCode);
+
+    return buffer;
+}
+
+//#########################################################################
+OrderRequest OrderBookManager::deserialize(const std::string& buffer) {
+    OrderRequest orderRequest{};
+    size_t offset = 0;
+
+    // Calculate the order request size
+    size_t requestSize = sizeof(orderRequest.symbol) + sizeof(orderRequest.qty) +
+                         sizeof(orderRequest.price) + sizeof(orderRequest.orderSide) +
+                         sizeof(orderRequest.orderType);
+
+    // Check the buffer size
+    if (buffer.size() < requestSize) {
+        throw std::runtime_error("[ERROR] deserialize(): Cannot dezerialize {OrderRequest}...");
+    }
+
+    // Deserialize the buffer into an order request
+    memcpy(&orderRequest.symbol, &buffer[offset], sizeof(orderRequest.symbol));
+    offset += sizeof(orderRequest.symbol);
+
+    memcpy(&orderRequest.qty, &buffer[offset], sizeof(orderRequest.qty));
+    offset += sizeof(orderRequest.qty);
+
+    memcpy(&orderRequest.price, &buffer[offset], sizeof(orderRequest.price));
+    offset += sizeof(orderRequest.price);
+
+    memcpy(&orderRequest.orderSide, &buffer[offset], sizeof(orderRequest.orderSide));
+    offset += sizeof(orderRequest.orderSide);
+
+    memcpy(&orderRequest.orderType, &buffer[offset], sizeof(orderRequest.orderType));
+    offset += sizeof(orderRequest.orderType);
+
+    return orderRequest;
 }

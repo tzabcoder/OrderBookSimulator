@@ -49,8 +49,40 @@ class OrderBookManager {
          */
         int cleanupSocket();
 
+        /**
+         * @brief Handle the order request message.
+         *
+         * @param buffer - string message from client
+         *
+         * @return OrderReponse - response of the order request.
+         */
+        OrderResponse handleMessage(std::string& buffer);
+
+        /**
+         * @brief Serialize an Order Response message from the order book.
+         * Converts a OrderResponse message (struct) to a string that can be sent
+         * over the socket.
+         *
+         * @param response - order response message from the order book
+         *
+         * @return std::string - serializes (string) of the response
+         */
+        std::string serialize(const OrderResponse& response);
+
+        /**
+         * @brief Deserialize an Order Request message sent by the client.
+         * Converts a string buffer to an OrderResponse (struct) message.
+         *
+         * @param buffer - string (serialized) order request message
+         *
+         * @return OrderRequest - order request message
+         */
+        OrderRequest deserialize(const std::string& buffer);
+
+
         bool logging;     // True to log to console, false otherwise
         int obmPort;      // Order book manager port
+        int BUFFER_SIZE;  // Size of the receive buffer
         SOCKET obmSocket; // Listener socket for order book manager
 
         // Map of the exchange symbol and the order book
