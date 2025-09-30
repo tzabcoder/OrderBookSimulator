@@ -22,6 +22,12 @@ OrderBookManager::~OrderBookManager() {
 
 //#########################################################################
 OrderResponse OrderBookManager::handleMessage(std::string& buffer) {
+    logMessage(
+        LogLevel::INFO,
+        buffer,
+        true
+    );
+
     return {};
 }
 
