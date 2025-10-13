@@ -1,7 +1,5 @@
 # Order Book Simulatior Specification
 
-**** Work in progress. ****
-
 Future features:
 
 * Agent can request open orders
@@ -203,13 +201,14 @@ Order matching is an event-driven process, meaning that once a new event occurs,
 ```cpp
 enum class ErrorCode {
 	OK,
-	BAD_REQUEST, // Invalid message structure (unable to process)
-	BAD_QTY,     // Invalid order quantity; must be positive
-	BAD_PRICE,   // Invalid order price; must be positive
-	BAD_SIDE,    // Invalid order side; See OrderSide
-	BAD_TYPE,    // Invalid order type; See OrderType
-	BAD_ID,      // Invalid order ID
-	FATAL        // Unclassified fatal error
+	BAD_REQUEST,  // Invalid message structure (unable to process)
+	BAD_QTY,      // Invalid order quantity; must be positive
+	BAD_PRICE,    // Invalid order price; must be positive
+	BAD_SIDE,     // Invalid order side; See OrderSide
+	BAD_TYPE,     // Invalid order type; See OrderType
+	BAD_ID,       // Invalid order ID
+	PARTIAL_FILL, // Cannot modify order because it was partially filled
+	FATAL         // Unclassified fatal error
 };
 ```
 
