@@ -1,0 +1,19 @@
+// Project Includes
+#include <Order_UT.hpp>
+#include <OrderBook_UT.hpp>
+#include <OrderBookManager_UT.hpp>
+#include <Trade_UT.hpp>
+
+int main() {
+    // Run order unit tests
+    Order_UT orderUT;
+    orderUT.runTests();
+
+    // Run trade unit tests
+
+    // Run order book unit tests
+
+    // Run order book manager unit tests
+
+    return 0;
+}

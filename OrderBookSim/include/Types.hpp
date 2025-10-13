@@ -45,13 +45,14 @@ enum class OrderStatus {
  */
 enum class ErrorCode {
 	OK,
-	BAD_REQUEST, // Invalid message structure (unable to process)
-	BAD_QTY,     // Invalid order quantity; must be positive
-	BAD_PRICE,   // Invalid order price; must be positive
-	BAD_SIDE,    // Invalid order side; See OrderSide
-	BAD_TYPE,    // Invalid order type; See OrderType
-    BAD_ID,      // Invalid order ID
-    FATAL        // Unclassified fatal internal error
+	BAD_REQUEST,  // Invalid message structure (unable to process)
+	BAD_QTY,      // Invalid order quantity; must be positive
+	BAD_PRICE,    // Invalid order price; must be positive
+	BAD_SIDE,     // Invalid order side; See OrderSide
+	BAD_TYPE,     // Invalid order type; See OrderType
+    BAD_ID,       // Invalid order ID
+    PARTIAL_FILL, // Cannot process because order was partially filled
+    FATAL         // Unclassified fatal internal error
 };
 
 /**

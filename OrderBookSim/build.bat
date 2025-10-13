@@ -2,6 +2,9 @@
 REM ===============================
 REM Building order book simulator
 REM ===============================
+echo ===============================
+echo Building order book simulator
+echo ===============================
 
 set "SRC_DIR=src"
 set "INCLUDE_DIR=include"
@@ -36,7 +39,7 @@ for %%f in ("%SRC_DIR%\*.cpp") do (
 )
 
 REM ===============================
-REM Linking objects to form ob_sim.exe
+REM Linking objects to form executable
 REM ===============================
 echo ===============================
 echo Linking object files...

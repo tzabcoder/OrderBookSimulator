@@ -42,7 +42,9 @@ std::string Order::generateOrderId() {
 
 //#########################################################################
 void Order::updateRemainingQty(int executedQty) {
-    remainingQty = remainingQty - executedQty;
+    if (executedQty <= remainingQty) {
+        remainingQty -= executedQty;
+    }
 }
 
 //#########################################################################
@@ -52,17 +54,23 @@ void Order::updateOrderStatus(bool status) {
 
 //#########################################################################
 void Order::updateQty(int t_qty) {
-    qty = t_qty;
+    if (t_qty > 0) {
+        qty = t_qty;
+    }
 }
 
 //#########################################################################
 void Order::updatePrice(double t_price) {
-    price = t_price;
+    if (t_price > 0) {
+        price = t_price;
+    }
 }
 
 //#########################################################################
 void Order::updateFillPrice(double t_price) {
-    fillPrice = t_price;
+    if (t_price > 0) {
+        fillPrice = t_price;
+    }
 }
 
 //#########################################################################

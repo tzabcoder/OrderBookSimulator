@@ -67,25 +67,32 @@ std::string OrderBook::modifyOrder(
     Order* order = findOrder(orderId);
 
     if (order) {
-        // Validate order parameters
-        if (qty <= 0) {
-            errCode = ErrorCode::BAD_QTY;
+        // Check if order was partially filled
+        if (order->getOrderQty() == order->getOrderRemainingQty()) {
+            // Validate order parameters
+            if (qty <= 0) {
+                errCode = ErrorCode::BAD_QTY;
+            }
+            else if (price <= 0.00) {
+                errCode = ErrorCode::BAD_PRICE;
+            }
+            else {
+                // Update the order attributes
+                order->updateQty(qty);
+                order->updatePrice(price);
+                orderHistory.push_back({OrderStatus::MODIFY, *order});
+
+                m_orderId = order->getOrderId();
+
+                // Run matching event
+                matchOrders(*order);
+
+                errCode = ErrorCode::OK;
+            }
         }
-        else if (price <= 0.00) {
-            errCode = ErrorCode::BAD_PRICE;
-        }
+        // Order was partially filled
         else {
-            // Update the order attributes
-            order->updateQty(qty);
-            order->updatePrice(price);
-            orderHistory.push_back({OrderStatus::MODIFY, *order});
-
-            m_orderId = order->getOrderId();
-
-            // Run matching event
-            matchOrders(*order);
-
-            errCode = ErrorCode::OK;
+            errCode = ErrorCode::PARTIAL_FILL;
         }
     }
     // Order not found
@@ -165,6 +172,7 @@ void OrderBook::matchOrders(Order& order) {
             // Get the resting order
             Order& restingOrder = *restingItr;
 
+            // Min ensures that updated quantity is never negative
             int matchQty = std::min(order.getOrderRemainingQty(), restingOrder.getOrderRemainingQty());
             totalShares += matchQty;
 
