@@ -4,14 +4,11 @@
 #include <OrderBookManager_UT.hpp>
 #include <Trade_UT.hpp>
 
-#include <iostream>
-
 int main() {
     // Run order unit tests
     Order_UT orderUT;
     orderUT.runTests();
 
-    std::cout << "TRADE UTs" << std::endl;
     // Run trade unit tests
     Trade_UT tradeUT;
     tradeUT.runTests();
