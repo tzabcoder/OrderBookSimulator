@@ -1,10 +1,8 @@
-// Global Includes
-#include <iostream>
-
 // Project Includes
 #include <Trade.hpp>
+#include <UnitTest.hpp>
 
-class Trade_UT {
+class Trade_UT : public UnitTest {
     public:
         /**
          * @brief Create the test trade object.
@@ -16,11 +14,7 @@ class Trade_UT {
             qty,
             price
         ) {
-            // Log test header
-            std::cout << "Trade UT: " << testTrade.getTradeId() << " ==========" << std::endl;
-
-            totalTests = 0;
-            invalidTests = 0;
+            logTestHeader(testName);
         }
 
         /**
@@ -38,53 +32,20 @@ class Trade_UT {
             testResult &= testGetQty();
             testResult &= testGetPrice();
 
-            logTestResults();
+            logTestResults(testName);
 
             return testResult;
         }
 
     private:
-        /**
-         * @brief Processes the unit test results.
-         *
-         * @param result test result
-         */
-        void processTestResult(bool result) {
-            totalTests += 1;
-
-            // Log test result
-            if (result) {
-                std::cout << "passed." << std::endl;
-            }
-            else {
-                invalidTests += 1;
-                std::cout << "failed..." << std::endl;
-            }
-        }
-
-        /**
-         * @brief Logs the total unit test results.
-         */
-        void logTestResults() {
-            int passedTests = totalTests - invalidTests;
-            double passRate = passedTests / totalTests;
-
-            // Log test statistics
-            std::cout << "Trade_UT Results ======================" << std::endl;
-            std::cout << "Passed Tests:  " << passedTests << std::endl;
-            std::cout << "Invalid Tests: " << invalidTests << std::endl;
-            std::cout << "Total Tests:   " << totalTests << std::endl;
-            std::cout << "Pass Rate:     " << passRate * 100 << "%" << std::endl;
-            std::cout << "=======================================" << std::endl;
-        }
-
+        // ========== UT Functions ==========
         /**
          * @brief Test get trade buy order ID.
          *
          * @return true if passed test case; false otherwise
          */
         bool testGetBuyOrderID() {
-            std::cout << "Trade_UT:testGetBuyOrderID() ";
+            logTestName("Trade_UT::testGetBuyOrderID()");
 
             bool testResult = (testTrade.getBuyOrderId() == buyID);
             processTestResult(testResult);
@@ -98,7 +59,7 @@ class Trade_UT {
          * @return true if passed test case; false otherwise
          */
         bool testGetSellOrderID() {
-            std::cout << "Trade_UT:testGetSellOrderID() ";
+            logTestName("Trade_UT::testGetSellOrderID()");
 
             bool testResult = (testTrade.getSellOrderId() == sellID);
             processTestResult(testResult);
@@ -112,7 +73,7 @@ class Trade_UT {
          * @return true if passed test case; false otherwise
          */
         bool testGetSymbol() {
-            std::cout << "Trade_UT:testGetSymbol() ";
+            logTestName("Trade_UT::testGetSymbol()");
 
             bool testResult = (testTrade.getSymbol() == symbol);
             processTestResult(testResult);
@@ -126,7 +87,7 @@ class Trade_UT {
          * @return true if passed test case; false otherwise
          */
         bool testGetQty() {
-            std::cout << "Trade_UT:testGetQty() ";
+            logTestName("Trade_UT::testGetQty()");
 
             bool testResult = (testTrade.getQty() == qty);
             processTestResult(testResult);
@@ -140,7 +101,7 @@ class Trade_UT {
          * @return true if passed test case; false otherwise
          */
         bool testGetPrice() {
-            std::cout << "Trade_UT:testGetPrice() ";
+            logTestName("Trade_UT::testGetPrice()");
 
             bool testResult = (testTrade.getPrice() == price);
             processTestResult(testResult);
@@ -148,6 +109,7 @@ class Trade_UT {
             return testResult;
         }
 
+        // ========== UT Variables ==========
         // Initial trade parameters
         const std::string symbol = "TEST";
         const std::string buyID = "1757529878230_538411";
@@ -158,7 +120,5 @@ class Trade_UT {
         // Trade for unit test operations
         Trade testTrade;
 
-        // Test counters
-        int totalTests;
-        int invalidTests;
+        const std::string testName = "Trade_UT";
 };

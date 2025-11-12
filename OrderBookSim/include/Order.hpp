@@ -5,6 +5,9 @@
 #include <Types.hpp>
 #include <utils.hpp>
 
+#ifndef ORDER_H
+#define ORDER_H
+
 class Order {
     public:
         /**
@@ -109,4 +112,6 @@ class Order {
 
         OrderSide orderSide; // Side of the order @see OrderSide
         OrderType orderType; // Type of the order @see OrderType
-};
+}; // Order
+
+#endif // ORDER_H

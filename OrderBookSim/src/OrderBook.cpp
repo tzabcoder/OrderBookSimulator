@@ -275,3 +275,28 @@ void OrderBook::removeOrder(Order& order) {
         orderIndex.erase(index);
     }
 }
+
+//#########################################################################
+std::string OrderBook::getOrderBookExchangeSymbol() {
+    return exchangeSymbol;
+}
+
+//#########################################################################
+std::vector<Trade> OrderBook::getTradeHistory() {
+    return tradeHistory;
+}
+
+//#########################################################################
+std::vector<std::pair<OrderStatus, Order>> OrderBook::getOrderBookHistory() {
+    return orderHistory;
+}
+
+//#########################################################################
+std::map<double, std::list<Order>> OrderBook::getActiveBuyOrders() {
+    return buyOrders;
+}
+
+//#########################################################################
+std::map<double, std::list<Order>> OrderBook::getActiveSellOrders() {
+    return sellOrders;
+}

@@ -1,8 +1,8 @@
 // Global Includes
 #include <string>
 
-#ifndef TYPES_HPP
-#define TYPES_HPP
+#ifndef TYPES_H
+#define TYPES_H
 
 /**
  * @brief Specifies the values for valid order sides.
@@ -94,4 +94,4 @@ struct OrderResponse {
     ErrorCode errCode;   // Response code of the request
 };
 
-#endif
+#endif // TYPES_H

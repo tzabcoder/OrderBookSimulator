@@ -11,6 +11,9 @@
 #include <Trade.hpp>
 #include <utils.hpp>
 
+#ifndef ORDERBOOK_H
+#define ORDERBOOK_H
+
 class OrderBook {
     public:
         /**
@@ -83,6 +86,43 @@ class OrderBook {
             ErrorCode& errCode
         );
 
+        /**
+         * @brief Get the Order Book exchange symbol.
+         *
+         * @return std::string - exhange symbol for the order book
+         */
+        std::string getOrderBookExchangeSymbol();
+
+        /**
+         * @brief Get the Order Book trade history.
+         *
+         * @return std::vector<Trade> - history of matched orders (trades)
+         */
+        std::vector<Trade> getTradeHistory();
+
+        /**
+         * @brief Get the Order Book activity history.
+         *
+         * [(OrderStatus, OrderObj) ... (OrderStatus, OrderObj)]
+         * List of pairs, where pair[0] is the status of the order and
+         * pair[1] is the order object.
+         *
+         * @return std::vector<std::pair<OrderStatus, Order>> - activity
+         *         history of the order book
+         */
+        std::vector<std::pair<OrderStatus, Order>> getOrderBookHistory();
+
+        /**
+         * @brief Get the active buy/sell orders in the order book.
+         *
+         * {price1: [O1 ... On] ... priceN: [O1 ... On]}
+         * Map of the price level, and active orders for that price.
+         *
+         * @return std::map<double, std::list<Order>>
+         */
+        std::map<double, std::list<Order>> getActiveBuyOrders();
+        std::map<double, std::list<Order>> getActiveSellOrders();
+
     private:
         /**
          * @brief Find an order in the order book.
@@ -134,4 +174,6 @@ class OrderBook {
 
         std::vector<std::pair<OrderStatus, Order>> orderHistory; // History of all order events in the order book
         std::vector<Trade> tradeHistory;                         // History of all trades in the order book (matched orders)
-};
+}; // OrderBook
+
+#endif // ORDERBOOK_H

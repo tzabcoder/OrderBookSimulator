@@ -4,6 +4,9 @@
 // Project Includes
 #include <utils.hpp>
 
+#ifndef TRADE_H
+#define TRADE_H
+
 class Trade {
     public:
         /**
@@ -59,4 +62,6 @@ class Trade {
         int qty;                 // Quantity executed
         long long timestamp;     // Time the trade was executed (matched)
         double price;            // Price order was executed (matched)
-};
+}; // Trade
+
+#endif // TRADE_H

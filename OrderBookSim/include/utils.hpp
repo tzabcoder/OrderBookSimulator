@@ -38,4 +38,4 @@ namespace utils {
      * @return bool - true if order type exists; false otherwise
      */
     bool validOrderType(OrderType type);
-};
+}; // utils

@@ -11,6 +11,9 @@
 #include <OrderBook.hpp>
 #include <Types.hpp>
 
+#ifndef ORDERBOOKMANAGER_H
+#define ORDERBOOKMANAGER_H
+
 class OrderBookManager {
     public:
         /**
@@ -88,4 +91,6 @@ class OrderBookManager {
         // Map of the exchange symbol and the order book
         // Key => exchange symbol, value => associated order book
         std::map<std::string, OrderBook> orderBookMap;
-};
+}; // OrderBookManager
+
+#endif // ORDERBOOKMAANGER_H
