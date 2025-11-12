@@ -77,15 +77,33 @@ std::string OrderBook::modifyOrder(
                 errCode = ErrorCode::BAD_PRICE;
             }
             else {
+                // Create a local copy to preserve iterator pointer
+                // Copy the order ID to preserve order details
+                Order modifiedOrder = *order;
+                modifiedOrder.copyOrderId(order->getOrderId());
+
                 // Update the order attributes
-                order->updateQty(qty);
-                order->updatePrice(price);
+                modifiedOrder.updateQty(qty);
+
+                // Only update the order price if specific order type
+                //! NOTE: LIMIT, STOP, ICEBERG orders need prices
+                //! NOTE: MARKET, FOK, IOC orders ignore price
+                if (modifiedOrder.getOrderType() == OrderType::LIMIT ||
+                    modifiedOrder.getOrderType() == OrderType::STOP ||
+                    modifiedOrder.getOrderType() == OrderType::ICEBERG) {
+                    modifiedOrder.updatePrice(price);
+
+                    // Remove the order from the old price level
+                    removeOrder(*order);
+                    insertOrder(modifiedOrder);
+                }
+
                 orderHistory.push_back({OrderStatus::MODIFY, *order});
 
-                m_orderId = order->getOrderId();
+                m_orderId = modifiedOrder.getOrderId();
 
                 // Run matching event
-                matchOrders(*order);
+                matchOrders(modifiedOrder);
 
                 errCode = ErrorCode::OK;
             }
@@ -241,12 +259,22 @@ void OrderBook::insertOrder(Order& order) {
 
     // Get the orders associated with the order price
     // If no orders, create a new list for the price level
-    auto& priceOrders = book[order.getOrderPrice()];
-    priceOrders.push_back(order);
+    if (book.find(order.getOrderPrice()) != book.end()) {
+        auto& priceOrders = book.at(order.getOrderPrice());
+        priceOrders.push_back(order);
 
-    // Save the iterator to the newly inserted order
-    auto iterator = std::prev(priceOrders.end());
-    orderIndex[order.getOrderId()] = {order.getOrderPrice(), iterator};
+        // Save the iterator to the newly inserted order
+        auto iterator = std::prev(priceOrders.end());
+        orderIndex[order.getOrderId()] = {order.getOrderPrice(), iterator};
+    }
+    else {
+        // Create the new price level
+        book.insert({order.getOrderPrice(), {order}});
+
+        // Save the iterator to the newly inserted order
+        auto iterator = std::prev(book[order.getOrderPrice()].end());
+        orderIndex[order.getOrderId()] = {order.getOrderPrice(), iterator};
+    }
 }
 
 //#########################################################################

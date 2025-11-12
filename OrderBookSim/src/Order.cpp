@@ -74,6 +74,11 @@ void Order::updateFillPrice(double t_price) {
 }
 
 //#########################################################################
+void Order::copyOrderId(std::string orderId) {
+    orderId = orderId;
+}
+
+//#########################################################################
 std::string Order::getOrderId() const {
     return orderId;
 }

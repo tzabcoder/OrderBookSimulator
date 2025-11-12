@@ -19,12 +19,15 @@ class UnitTest {
         }
 
         /**
-         * @brief Log the unit test name.
+         * @brief Logs a status update within a specific unit test step.
          *
-         * @param testName - name of the individual test.
+         * @param statusMsg - message to log
+         * @param statusResult - result of unit test step
          */
-        void logTestName(const std::string testName) {
-            std::cout << testName << " ";
+        void logStatusUpdate(const std::string statusMsg, bool statusResult) {
+            std::string resultStr = statusResult ? "PASSED" : "FAILED";
+
+            std::cout << statusMsg << " | " << resultStr << std::endl;
         }
 
         /**
@@ -33,16 +36,16 @@ class UnitTest {
          *
          * @param result - true if passed test; false otherwise
          */
-        void processTestResult(bool result){
+        void processTestResult(std::string testName, bool result){
             totalTests += 1;
 
             // Log test result
             if (result) {
-                std::cout << "passed." << std::endl;
+                std::cout << testName << " passed." << std::endl;
             }
             else {
                 invalidTests += 1;
-                std::cout << "failed..." << std::endl;
+                std::cout << testName << " failed..." << std::endl;
             }
         }
 

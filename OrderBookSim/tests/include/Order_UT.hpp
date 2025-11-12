@@ -46,8 +46,6 @@ class Order_UT : public UnitTest {
          * @return true if passed test case; false otherwise
          */
         bool testOrderValues() {
-            logTestName("Order_UT::testOrderValues()");
-
             bool testResult = true;
 
             // Validate order parameters
@@ -63,7 +61,7 @@ class Order_UT : public UnitTest {
                 testResult = false;
             }
 
-            processTestResult(testResult);
+            processTestResult("Order_UT::testOrderValues()", testResult);
 
             return testResult;
         }
@@ -74,8 +72,6 @@ class Order_UT : public UnitTest {
          * @return true if passed test case; false otherwise
          */
         bool testUpdateQty() {
-            logTestName("Order_UT::testUpdateQty()");
-
             bool testResult = true;
 
             const int newQty = 1000;
@@ -92,7 +88,7 @@ class Order_UT : public UnitTest {
             testOrder.updateQty(-1);
             testResult = (testOrder.getOrderQty() == newQty);
 
-            processTestResult(testResult);
+            processTestResult("Order_UT::testUpdateQty()", testResult);
 
             return testResult;
         }
@@ -103,8 +99,6 @@ class Order_UT : public UnitTest {
          * @return true if test case passed; false otherwise
          */
         bool testUpdateRemainingQty() {
-            logTestName("Order_UT::testUpdateRemainingQty()");
-
             bool testResult = true;
 
             // Restore original order quantity
@@ -130,7 +124,7 @@ class Order_UT : public UnitTest {
             testOrder.updateRemainingQty(invalidQty);
             testResult = (testOrder.getOrderRemainingQty() == 0);
 
-            processTestResult(testResult);
+            processTestResult("Order_UT::testUpdateRemainingQty()", testResult);
 
             return testResult;
         }
@@ -141,8 +135,6 @@ class Order_UT : public UnitTest {
          * @return true if test case passed; false otherwise
          */
         bool testUpdatePrice() {
-            logTestName("Order_UT::testUpdatePrice()");
-
             bool testResult = true;
 
             const double newPrice = 200.0;
@@ -159,7 +151,7 @@ class Order_UT : public UnitTest {
             testOrder.updateQty(-1);
             testResult = (testOrder.getOrderPrice() == newPrice);
 
-            processTestResult(testResult);
+            processTestResult("Order_UT::testUpdatePrice()", testResult);
 
             return testResult;
         }
@@ -170,8 +162,6 @@ class Order_UT : public UnitTest {
          * @return true if test case passed; false otherwise
          */
         bool testUpdateFillPrice() {
-            logTestName("Order_UT::testUpdateFillPrice()");
-
             bool testResult = true;
 
             const double newFillPrice = 200.1;
@@ -188,7 +178,7 @@ class Order_UT : public UnitTest {
             testOrder.updateFillPrice(-1);
             testResult = (testOrder.getOrderFillPrice() == newFillPrice);
 
-            processTestResult(testResult);
+            processTestResult("Order_UT::testUpdateFillPrice()", testResult);
 
             return testResult;
         }
@@ -199,8 +189,6 @@ class Order_UT : public UnitTest {
          * @return true if test case passed; false otherwise
          */
         bool testUpdateOrderStatus() {
-            logTestName("Order_UT::testUpdateOrderStatus()");
-
             bool testResult = true;
 
             testOrder.updateOrderStatus(true);
@@ -209,7 +197,7 @@ class Order_UT : public UnitTest {
             testOrder.updateOrderStatus(false);
             testResult = (testOrder.getOrderStatus() == false);
 
-            processTestResult(testResult);
+            processTestResult("Order_UT::testUpdateOrderStatus()", testResult);
 
             return testResult;
         }
@@ -218,5 +206,5 @@ class Order_UT : public UnitTest {
         // Order for unit test operations
         Order testOrder;
 
-        const std::string testName =")Order_UT";
+        const std::string testName ="Order_UT";
 };

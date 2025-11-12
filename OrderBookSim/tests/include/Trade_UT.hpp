@@ -45,10 +45,9 @@ class Trade_UT : public UnitTest {
          * @return true if passed test case; false otherwise
          */
         bool testGetBuyOrderID() {
-            logTestName("Trade_UT::testGetBuyOrderID()");
-
             bool testResult = (testTrade.getBuyOrderId() == buyID);
-            processTestResult(testResult);
+
+            processTestResult("Trade_UT::testGetBuyOrderID()", testResult);
 
             return testResult;
         }
@@ -59,10 +58,9 @@ class Trade_UT : public UnitTest {
          * @return true if passed test case; false otherwise
          */
         bool testGetSellOrderID() {
-            logTestName("Trade_UT::testGetSellOrderID()");
-
             bool testResult = (testTrade.getSellOrderId() == sellID);
-            processTestResult(testResult);
+
+            processTestResult("Trade_UT::testGetSellOrderID()", testResult);
 
             return testResult;
         }
@@ -73,10 +71,9 @@ class Trade_UT : public UnitTest {
          * @return true if passed test case; false otherwise
          */
         bool testGetSymbol() {
-            logTestName("Trade_UT::testGetSymbol()");
-
             bool testResult = (testTrade.getSymbol() == symbol);
-            processTestResult(testResult);
+
+            processTestResult("Trade_UT::testGetSymbol()", testResult);
 
             return testResult;
         }
@@ -87,10 +84,9 @@ class Trade_UT : public UnitTest {
          * @return true if passed test case; false otherwise
          */
         bool testGetQty() {
-            logTestName("Trade_UT::testGetQty()");
-
             bool testResult = (testTrade.getQty() == qty);
-            processTestResult(testResult);
+
+            processTestResult("Trade_UT::testGetQty()", testResult);
 
             return testResult;
         }
@@ -101,10 +97,9 @@ class Trade_UT : public UnitTest {
          * @return true if passed test case; false otherwise
          */
         bool testGetPrice() {
-            logTestName("Trade_UT::testGetPrice()");
-
             bool testResult = (testTrade.getPrice() == price);
-            processTestResult(testResult);
+
+            processTestResult("Trade_UT::testGetPrice()", testResult);
 
             return testResult;
         }

@@ -14,6 +14,8 @@ int main() {
     tradeUT.runTests();
 
     // Run order book unit tests
+    OrderBook_UT orderBookUT;
+    orderBookUT.runTests();
 
     // Run order book manager unit tests
 

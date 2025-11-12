@@ -67,6 +67,15 @@ class Order {
         void updateFillPrice(double t_price);
 
         /**
+         * @brief Copies an order ID.
+         * This should only be used when an order copy is needed. Resetting the
+         * order ID will cause undefined behavior.
+         *
+         * @param orderId - order ID of the copied order
+         */
+        void copyOrderId(std::string orderId);
+
+        /**
          * @brief Accessor functions for the order object (getters).
          *
          * getOrderId() - gets this order's identifier
