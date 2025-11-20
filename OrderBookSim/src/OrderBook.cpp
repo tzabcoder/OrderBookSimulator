@@ -67,50 +67,47 @@ std::string OrderBook::modifyOrder(
     Order* order = findOrder(orderId);
 
     if (order) {
-        // Check if order was partially filled
-        if (order->getOrderQty() == order->getOrderRemainingQty()) {
-            // Validate order parameters
-            if (qty <= 0) {
-                errCode = ErrorCode::BAD_QTY;
-            }
-            else if (price <= 0.00) {
-                errCode = ErrorCode::BAD_PRICE;
-            }
-            else {
-                // Create a local copy to preserve iterator pointer
-                // Copy the order ID to preserve order details
-                Order modifiedOrder = *order;
-                modifiedOrder.copyOrderId(order->getOrderId());
-
-                // Update the order attributes
-                modifiedOrder.updateQty(qty);
+        // Validate order parameters
+        if (qty <= 0) {
+            errCode = ErrorCode::BAD_QTY;
+        }
+        else if (price <= 0.00) {
+            errCode = ErrorCode::BAD_PRICE;
+        }
+        else {
+            // Check if order was partially filled
+            if (order->getOrderQty() == order->getOrderRemainingQty()) {
+                // Create the order copy
+                Order orderCopy = *order;
+                orderCopy.copyOrderId(order->getOrderId());
+                orderCopy.updateQty(qty);
+                orderCopy.updatePrice(price);
 
                 // Only update the order price if specific order type
                 //! NOTE: LIMIT, STOP, ICEBERG orders need prices
                 //! NOTE: MARKET, FOK, IOC orders ignore price
-                if (modifiedOrder.getOrderType() == OrderType::LIMIT ||
-                    modifiedOrder.getOrderType() == OrderType::STOP ||
-                    modifiedOrder.getOrderType() == OrderType::ICEBERG) {
-                    modifiedOrder.updatePrice(price);
+                if (order->getOrderType() == OrderType::LIMIT ||
+                    order->getOrderType() == OrderType::STOP ||
+                    order->getOrderType() == OrderType::ICEBERG) {
+                    order->updatePrice(price);
 
                     // Remove the order from the old price level
                     removeOrder(*order);
-                    insertOrder(modifiedOrder);
                 }
 
                 orderHistory.push_back({OrderStatus::MODIFY, *order});
 
-                m_orderId = modifiedOrder.getOrderId();
+                m_orderId = orderCopy.getOrderId();
 
                 // Run matching event
-                matchOrders(modifiedOrder);
+                matchOrders(orderCopy);
 
                 errCode = ErrorCode::OK;
             }
-        }
-        // Order was partially filled
-        else {
-            errCode = ErrorCode::PARTIAL_FILL;
+            // Order was partially filled
+            else {
+                errCode = ErrorCode::PARTIAL_FILL;
+            }
         }
     }
     // Order not found
@@ -273,6 +270,7 @@ void OrderBook::insertOrder(Order& order) {
 
         // Save the iterator to the newly inserted order
         auto iterator = std::prev(book[order.getOrderPrice()].end());
+
         orderIndex[order.getOrderId()] = {order.getOrderPrice(), iterator};
     }
 }

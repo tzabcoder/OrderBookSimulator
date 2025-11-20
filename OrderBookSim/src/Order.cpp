@@ -41,6 +41,11 @@ std::string Order::generateOrderId() {
 }
 
 //#########################################################################
+void Order::copyOrderId(std::string copyOrderId) {
+    orderId = copyOrderId;
+}
+
+//#########################################################################
 void Order::updateRemainingQty(int executedQty) {
     if (executedQty <= remainingQty) {
         remainingQty -= executedQty;
@@ -71,11 +76,6 @@ void Order::updateFillPrice(double t_price) {
     if (t_price > 0) {
         fillPrice = t_price;
     }
-}
-
-//#########################################################################
-void Order::copyOrderId(std::string orderId) {
-    orderId = orderId;
 }
 
 //#########################################################################

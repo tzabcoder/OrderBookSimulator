@@ -67,15 +67,6 @@ class Order {
         void updateFillPrice(double t_price);
 
         /**
-         * @brief Copies an order ID.
-         * This should only be used when an order copy is needed. Resetting the
-         * order ID will cause undefined behavior.
-         *
-         * @param orderId - order ID of the copied order
-         */
-        void copyOrderId(std::string orderId);
-
-        /**
          * @brief Accessor functions for the order object (getters).
          *
          * getOrderId() - gets this order's identifier
@@ -99,6 +90,14 @@ class Order {
         bool getOrderStatus() const;
         OrderSide getOrderSide() const;
         OrderType getOrderType() const;
+
+        /**
+         * @brief Copy the order ID between orders.
+         * THIS SHOULD ONLY BE USED WHEN COPYING ORDERS.
+         *
+         * @param orderId - order ID to copy
+         */
+        void copyOrderId(std::string orderId);
 
     private:
         /**

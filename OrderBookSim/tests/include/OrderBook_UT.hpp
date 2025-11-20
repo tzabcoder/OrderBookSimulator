@@ -161,7 +161,6 @@ class OrderBook_UT : public UnitTest {
             logStatusUpdate("Modify order", testResult);
 
             // Validate the order details in the order book
-            // There should only be one order at $125.50
             std::map<double, std::list<Order>> activeBuyOrders = orderBook.getActiveBuyOrders();
 
             try {
@@ -169,6 +168,7 @@ class OrderBook_UT : public UnitTest {
                 std::list<Order> priceBuyOrders = activeBuyOrders.at(newPrice);
 
                 if (priceBuyOrders.size() > 0) {
+                    // There should only be one order at $125.50 price level
                     Order modifiedOrder = priceBuyOrders.front();
 
                     testResult = (modifiedOrder.getOrderQty() == newQty);
@@ -187,7 +187,7 @@ class OrderBook_UT : public UnitTest {
 
             // Invalid order quantity
             modifiedOrderId = orderBook.modifyOrder(
-                modifiedOrderId,
+                orderId,
                 -100,
                 100,
                 errCode
